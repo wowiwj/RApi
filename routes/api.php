@@ -16,7 +16,8 @@ use Illuminate\Http\Request;
 Route::get('/',function (Request $request){
 
     return response()->json([
-        'code' => 200
+        'code' => 200,
+        'message' => 'success'
     ]);
 });
 
