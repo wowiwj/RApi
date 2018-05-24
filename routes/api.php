@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 
 Route::get('/',function (Request $request){
 
+
+//    return \App\Models\User::all();
+
     return response()->json([
         'code' => 200,
         'message' => 'success'
