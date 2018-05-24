@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuthorizationController extends Controller
@@ -13,7 +14,12 @@ class AuthorizationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', [
+            'except' => [
+                'login',
+                'register'
+            ]
+        ]);
     }
 
     /**
@@ -21,7 +27,7 @@ class AuthorizationController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
         $credentials = request(['phone', 'password']);
 
@@ -30,6 +36,27 @@ class AuthorizationController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request){
+
+        $this->validate($request,[
+            'phone' => 'required',
+            'password' => 'required|min:6'
+        ]);
+
+        User::create([
+            'name' => $request->phone,
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password)
+        ]);
+
+        return $this->login($request);
     }
 
     /**

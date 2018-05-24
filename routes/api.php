@@ -18,8 +18,9 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 
-], function ($router) {
+], function () {
 
+    Route::post('register','AuthorizationController@register');
     Route::post('login', 'AuthorizationController@login');
     Route::post('logout', 'AuthorizationController@logout');
     Route::post('refresh', 'AuthorizationController@refresh');
@@ -28,8 +29,6 @@ Route::group([
 });
 
 Route::get('/',function (Request $request){
-
-
 //    return \App\Models\User::all();
 
     return response()->json([
