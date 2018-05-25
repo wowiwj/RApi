@@ -32,7 +32,7 @@ class AuthorizationController extends Controller
         $credentials = request(['phone', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return api()->failed('用户名或密码错误',401);
         }
 
         return $this->respondWithToken($token);
@@ -50,6 +50,10 @@ class AuthorizationController extends Controller
             'password' => 'required|min:6'
         ]);
 
+        if (User::where('name',$request->phone)->first()){
+            return api()->failed('该用户已存在',401);
+        }
+
         User::create([
             'name' => $request->phone,
             'phone' => $request->phone,
@@ -66,7 +70,7 @@ class AuthorizationController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return api()->success(auth()->user());
     }
 
     /**
@@ -78,7 +82,8 @@ class AuthorizationController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return api()->message('退出登录成功');
+
     }
 
     /**
@@ -100,7 +105,7 @@ class AuthorizationController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
+        return api()->success([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
