@@ -31,6 +31,7 @@ Route::group([
 Route::get('/',function (Request $request){
 //    return \App\Models\User::all();
 
+    return api()->success('dddd');
     return response()->json([
         'code' => 200,
         'message' => 'success'

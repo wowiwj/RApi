@@ -24,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        return api()->success('dd');
         return view('home');
     }
 }
