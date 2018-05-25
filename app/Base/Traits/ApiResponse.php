@@ -2,6 +2,7 @@
 
 namespace App\Base\Traits;
 
+use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response as FoundationResponse;
 use Response;
 
@@ -37,12 +38,18 @@ trait ApiResponse
      */
     public function respond($data, $header = [])
     {
-        if (app()->has('debugbar') && app('debugbar')->isEnabled()) {
-
-            $debug = ['_debugbar' => app('debugbar')->getData()];
-            $data  = array_merge($data, $debug);
+        if ($this->debugEnabled()) {
+            $data  = array_merge($data, $this->getDebug());
         }
         return Response::json($data, 200, $header);
+    }
+
+    protected function debugEnabled(){
+        return app()->has('debugbar') && app('debugbar')->isEnabled();
+    }
+
+    protected function getDebug(){
+        return ['_debugbar' => app('debugbar')->getData()];
     }
 
     /**
@@ -58,7 +65,7 @@ trait ApiResponse
         $status = [
             'code' => $this->statusCode,
         ];
-        $data   = array_merge($status, $data);
+        $data   = array_merge($data, $status);
         return $this->respond($data);
     }
 
@@ -119,6 +126,19 @@ trait ApiResponse
     public function notFond($message = 'Not Fond!')
     {
         return $this->failed($message, Foundationresponse::HTTP_NOT_FOUND);
+    }
+
+
+    public function resource(JsonResource $resource){
+        $resource->additional([
+            'code' => $this->statusCode
+        ]);
+
+        if ($this->debugEnabled()){
+            $resource->additional($this->getDebug());
+        }
+
+        return $resource;
     }
 
 }

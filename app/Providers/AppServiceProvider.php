@@ -28,9 +28,7 @@ class AppServiceProvider extends ServiceProvider
         // set api formatter
         $this->app->singleton(Response::class,function ($app){
 
-//            dd(config('sapi'));
-
-            return new  Response([]);
+            return new  Response(config('sapi'));
 
         });
 

@@ -28,15 +28,7 @@ Route::group([
 
 });
 
-Route::get('/',function (Request $request){
-//    return \App\Models\User::all();
-
-    return api()->success('dddd');
-    return response()->json([
-        'code' => 200,
-        'message' => 'success'
-    ]);
-});
+Route::get('/','HomeController@index');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
